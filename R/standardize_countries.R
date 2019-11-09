@@ -20,7 +20,7 @@
 #' standardize_countries(countries, miss = "remove")
 #' 
 standardize_countries <- function(
-  country, to = c("iso3", "iso2", "iso_name"), missing = c("keep", "remove")
+  country, to = c("iso3", "iso2", "iso_name", "continent_code"), missing = c("keep", "remove")
   ) {
   to      <- match.arg(to)
   missing <- match.arg(missing)
@@ -33,5 +33,3 @@ standardize_countries <- function(
   qdapTools::lookup(tolower(country), s, r, miss)
   
 }
-
-

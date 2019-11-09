@@ -64,7 +64,34 @@ tab_continent_name <- readr::read_delim(
 ) %>%
   `names<-`(c("continent_code", "continent_name"))
 
-
+tab_country_r <- countrycode::codelist %>%
+  dplyr::select(
+    country.name.de,
+    country.name.en,
+    cow.name,
+    ecb.name,
+    eurostat.name,
+    fao.name,
+    fips.name,
+    genc.name,
+    ioc.name,
+    iso.name.en,
+    iso.name.fr,
+    un.name.ar,
+    un.name.en,
+    un.name.es,
+    un.name.fr,
+    un.name.ru,
+    un.name.zh,
+    unpd.name,
+    iso3 = iso3c
+  ) %>% dplyr::filter(!is.na(iso3)) %>%
+  tidyr::pivot_longer(c(country.name.de:unpd.name), names_to = "type", values_to = "name") %>%
+  dplyr::filter(!is.na(name)) %>%
+  dplyr::mutate(
+    type = "common_name",
+    source = "countrycodes::codelist"
+    )
 
 
 tab_countries <- dplyr::bind_rows(
@@ -76,7 +103,7 @@ tab_countries <- dplyr::bind_rows(
     dplyr::mutate(iso3 = name),
   
   dplyr::select(tab_iso, iso3 = Alpha_3, name = Name) %>%
-    dplyr::mutate(type = "name", source = "iso_3166_1"),
+    dplyr::mutate(type = "iso_name", source = "iso_3166_1"),
   
   dplyr::select(tab_iso, iso3 = Alpha_3, name = Official_name) %>%
     dplyr::mutate(type = "official_name", source = "iso_3166_1"),
@@ -93,7 +120,9 @@ tab_countries <- dplyr::bind_rows(
   dplyr::select(tab_datastream, iso3 = iso3, name = country) %>%
     dplyr::mutate(type = "common_name", source = "datastream"),
   
-  tab_own
+  tab_own,
+  
+  tab_country_r
 ) %>% dplyr::filter(!is.na(name)) %>%
   dplyr::mutate(name = tolower(name)) %>%
   dplyr::distinct(name, .keep_all = TRUE) %>%

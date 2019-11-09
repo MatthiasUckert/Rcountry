@@ -4,8 +4,8 @@
 \alias{standardize_countries}
 \title{Convert Country Names to ISO Format}
 \usage{
-standardize_countries(country, to = c("iso3", "iso2", "iso_name"),
-  missing = c("keep", "remove"))
+standardize_countries(country, to = c("iso3", "iso2", "iso_name",
+  "continent_code"), missing = c("keep", "remove"))
 }
 \arguments{
 \item{country}{A character string with country names}
